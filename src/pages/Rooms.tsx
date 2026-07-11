@@ -223,8 +223,8 @@ const Rooms = () => {
                           </button>
                         </TableCell>
                         <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                          <Button variant="ghost" size="icon" onClick={() => handleOpen(room)}><Pencil className="h-4 w-4" /></Button>
-                          <Button variant="ghost" size="icon" onClick={() => deleteRoom(room.id)}><Trash2 className="h-4 w-4" /></Button>
+                          <Button variant="ghost" size="icon" aria-label="Edit room" onClick={() => handleOpen(room)}><Pencil className="h-4 w-4" /></Button>
+                          <Button variant="ghost" size="icon" aria-label="Delete room" onClick={() => deleteRoom(room.id)}><Trash2 className="h-4 w-4" /></Button>
                         </TableCell>
                       </TableRow>
 

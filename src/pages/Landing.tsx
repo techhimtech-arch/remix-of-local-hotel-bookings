@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { 
   Hotel, BedDouble, CalendarCheck, Users, BarChart3, 
@@ -24,6 +25,14 @@ const advancedFeatures = [
 const Landing = () => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 selection:bg-primary/30 font-sans">
+      <Helmet>
+        <title>Hotel Booking Manager — Offline PWA for Hoteliers</title>
+        <meta name="description" content="Offline-first hotel booking manager for small hotels and hostels. Track rooms, dorm beds, guests, expenses and revenue — installs as a PWA. 3-month free trial, then ₹3,699/year." />
+        <link rel="canonical" href="https://myhotel.zinglabs.in/" />
+        <meta property="og:title" content="Hotel Booking Manager — Offline PWA for Hoteliers" />
+        <meta property="og:description" content="Offline-first hotel booking manager for small hotels and hostels. Track rooms, dorm beds, guests, expenses and revenue." />
+        <meta property="og:url" content="https://myhotel.zinglabs.in/" />
+      </Helmet>
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 border-b border-border/40 backdrop-blur-md z-50 bg-background/60">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">

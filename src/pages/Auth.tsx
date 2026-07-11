@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -58,6 +59,15 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <Helmet>
+        <title>Sign in — Hotel Booking Manager</title>
+        <meta name="description" content="Sign in or create an account to manage rooms, bookings, guests, expenses and reports in the Hotel Booking Manager PWA." />
+        <link rel="canonical" href="https://myhotel.zinglabs.in/auth" />
+        <meta property="og:title" content="Sign in — Hotel Booking Manager" />
+        <meta property="og:description" content="Sign in or create an account to manage rooms, bookings, guests, expenses and reports." />
+        <meta property="og:url" content="https://myhotel.zinglabs.in/auth" />
+      </Helmet>
+      <h1 className="sr-only">Sign in to Hotel Booking Manager</h1>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-2">
