@@ -268,7 +268,7 @@ const Expenses = () => {
                     <TableCell>{e.paymentMethod}</TableCell>
                     <TableCell className="text-right font-medium">₹{e.amount.toLocaleString()}</TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="icon" onClick={() => deleteExpense(e.id)}>
+                      <Button variant="ghost" size="icon" aria-label="Delete expense" onClick={() => deleteExpense(e.id)}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </TableCell>

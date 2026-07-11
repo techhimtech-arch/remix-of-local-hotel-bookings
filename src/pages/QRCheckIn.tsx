@@ -1,5 +1,6 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useHotelData } from '@/hooks/useHotelData';
@@ -29,6 +30,13 @@ const QRCheckIn = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
+      <Helmet>
+        <title>QR Check-in — Hotel Booking Manager</title>
+        <meta name="description" content="Confirm a guest booking check-in via QR code in the Hotel Booking Manager." />
+        <meta property="og:title" content="QR Check-in — Hotel Booking Manager" />
+        <meta property="og:description" content="Confirm a guest booking check-in via QR code." />
+      </Helmet>
+      <h1 className="sr-only">Guest QR Check-in</h1>
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
