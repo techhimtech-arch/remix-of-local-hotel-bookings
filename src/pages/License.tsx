@@ -27,7 +27,8 @@ export default function License() {
       setKey('');
       return;
     }
-    toast({ title: 'Activation failed', description: res.reason, variant: 'destructive' });
+    const reason = 'reason' in res ? res.reason : 'Unknown error';
+    toast({ title: 'Activation failed', description: reason, variant: 'destructive' });
   };
 
   const handleGenerate = () => {
