@@ -149,6 +149,58 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section className="py-24 bg-background relative" id="pricing">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              No complex tiers. Get full access to all features with our straightforward yearly plan.
+            </p>
+          </div>
+          
+          <div className="bg-primary text-primary-foreground p-8 md:p-12 rounded-3xl border border-primary shadow-2xl relative max-w-2xl mx-auto flex flex-col md:flex-row items-center gap-8">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-amber-400 to-orange-500 text-white px-6 py-1.5 rounded-full text-sm font-bold shadow-lg flex items-center gap-2">
+              <Sparkles className="h-4 w-4" /> 3 Months Free Trial
+            </div>
+            
+            <div className="flex-1 text-center md:text-left">
+              <h3 className="text-3xl font-bold mb-2">Premium Hotel Manager</h3>
+              <p className="text-primary-foreground/80 mb-6">Everything you need to run your property smoothly, including offline access.</p>
+              
+              <ul className="space-y-4 mb-8 text-left">
+                {[
+                  'Works Offline (PWA Support)', 
+                  'Expense & Housekeeping Tracking', 
+                  'Unlimited Rooms & Bookings', 
+                  'Direct UPI Payments (Admin Verified)',
+                  'Priority Support'
+                ].map((feature, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <div className="bg-white/20 p-1 rounded-full"><CheckCircle2 className="h-4 w-4 text-white" /></div>
+                    <span className="font-medium">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bg-white/10 p-8 rounded-2xl border border-white/20 backdrop-blur-sm text-center min-w-[250px]">
+              <div className="mb-2">
+                <span className="text-5xl font-extrabold">₹3699</span>
+              </div>
+              <div className="text-primary-foreground/80 font-medium mb-6">per year (after trial)</div>
+              
+              <Button className="w-full rounded-full h-14 text-lg bg-white text-primary hover:bg-white/90 shadow-xl" asChild>
+                <Link to="/auth?tab=signup">Start Free Trial</Link>
+              </Button>
+              <p className="text-xs text-primary-foreground/70 mt-4">
+                Pay directly via UPI. Account activated by Admin.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Stats/Benefits */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-6">
