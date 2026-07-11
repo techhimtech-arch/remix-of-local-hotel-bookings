@@ -21,6 +21,7 @@ const navItems = [
   { title: 'Expenses', url: '/expenses', icon: Receipt },
   { title: 'Reports', url: '/reports', icon: BarChart3 },
   { title: 'Backup', url: '/backup', icon: HardDriveDownload },
+  { title: 'License', url: '/license', icon: KeyRound },
 ];
 
 export function AppSidebar() {
