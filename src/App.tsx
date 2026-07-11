@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { StorageGate } from "@/components/StorageGate";
+import { LicenseGate } from "@/components/LicenseGate";
 import { AppLayout } from "./components/AppLayout";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
@@ -16,6 +17,7 @@ import Guests from "./pages/Guests";
 import Expenses from "./pages/Expenses";
 import Reports from "./pages/Reports";
 import Backup from "./pages/Backup";
+import LicensePage from "./pages/License";
 import NotFound from "./pages/NotFound";
 import QRCheckIn from "./pages/QRCheckIn";
 
