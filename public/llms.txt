@@ -1,0 +1,10 @@
+# Hotel Booking Manager
+
+> Offline-first hotel booking manager for small hotels and hostels. Manages rooms, dorm beds, guests, expenses, and revenue as an installable PWA.
+
+Hotel Booking Manager is a Progressive Web App for hoteliers. It runs offline, stores data locally in the browser (IndexedDB) with encrypted export/import backup, and includes room and dorm-bed management, bookings with a monthly calendar, guest records with autofill, expense tracking, housekeeping status, invoice PDF generation, QR check-in, and revenue reports. Pricing is a 3-month free trial followed by ₹3,699 per year.
+
+## Pages
+
+- [Home](/): Product overview, features and pricing for the Hotel Booking Manager PWA.
+- [Sign in / Sign up](/auth): Create an account or sign in to the manager dashboard.
