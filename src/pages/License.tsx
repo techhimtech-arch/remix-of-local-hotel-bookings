@@ -25,9 +25,9 @@ export default function License() {
     if (res.ok) {
       toast({ title: 'Activated!', description: `Valid until ${res.expiresAt.toLocaleDateString()}` });
       setKey('');
-    } else {
-      toast({ title: 'Activation failed', description: res.reason, variant: 'destructive' });
+      return;
     }
+    toast({ title: 'Activation failed', description: res.reason, variant: 'destructive' });
   };
 
   const handleGenerate = () => {
