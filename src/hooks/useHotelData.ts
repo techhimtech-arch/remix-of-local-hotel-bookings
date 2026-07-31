@@ -1,11 +1,30 @@
 import { useLocalStorage } from './useLocalStorage';
-import { Room, Guest, Booking, Expense } from '@/types/hotel';
+import { Room, Guest, Booking, Expense, HotelSettings } from '@/types/hotel';
+
+const defaultHotelSettings: HotelSettings = {
+  name: 'Royal Heritage Hotel & Residency',
+  tagline: 'Your Home Away From Home',
+  address: 'Main Station Road, Civil Lines, City Center',
+  phone: '+91 98765 43210',
+  email: 'info@royalheritagehotel.com',
+  gstNumber: '22AAAAA0000A1Z5',
+  taxRate: 12,
+  checkInTime: '12:00 PM',
+  checkOutTime: '11:00 AM',
+  terms: '1. Original ID proof required during check-in.\n2. Checkout time is 11:00 AM.\n3. Management is not responsible for loss of personal valuables.\n4. Alcohol and illegal substances strictly prohibited.',
+};
 
 export function useHotelData() {
   const [rooms, setRooms] = useLocalStorage<Room[]>('hotel_rooms', []);
   const [guests, setGuests] = useLocalStorage<Guest[]>('hotel_guests', []);
   const [bookings, setBookings] = useLocalStorage<Booking[]>('hotel_bookings', []);
   const [expenses, setExpenses] = useLocalStorage<Expense[]>('hotel_expenses', []);
+  const [hotelSettings, setHotelSettings] = useLocalStorage<HotelSettings>('hotel_settings', defaultHotelSettings);
+
+  const updateHotelSettings = (settings: Partial<HotelSettings>) => {
+    setHotelSettings((prev) => ({ ...prev, ...settings }));
+  };
+
 
   const addRoom = (room: Room) => setRooms((prev) => [...prev, room]);
   const updateRoom = (room: Room) => setRooms((prev) => prev.map((r) => (r.id === room.id ? room : r)));
@@ -97,13 +116,15 @@ export function useHotelData() {
   };
 
   return {
-    rooms, guests, bookings, expenses,
+    rooms, guests, bookings, expenses, hotelSettings,
     addRoom, updateRoom, deleteRoom,
     addGuest, updateGuest,
     addBooking, updateBooking,
     addExpense, updateExpense, deleteExpense,
+    updateHotelSettings,
     getGuestById, getRoomById,
     getOccupiedBeds, getAvailableBeds, getBedDetails,
     getRevenueForRange, getExpensesForRange, getTotalExpensesForRange,
   };
 }
+

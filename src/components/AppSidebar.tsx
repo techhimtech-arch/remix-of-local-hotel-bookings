@@ -1,6 +1,7 @@
 import { LayoutDashboard, BedDouble, CalendarCheck, Users, BarChart3, Hotel, HardDriveDownload, LogOut, Receipt } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useAuth } from '@/contexts/AuthContext';
+import { useHotelData } from '@/hooks/useHotelData';
 import {
   Sidebar,
   SidebarContent,
@@ -25,15 +26,19 @@ const navItems = [
 
 export function AppSidebar() {
   const { signOut, user } = useAuth();
+  const { hotelSettings } = useHotelData();
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2">
-          <Hotel className="h-6 w-6 text-primary" />
-          <span className="text-lg font-bold group-data-[collapsible=icon]:hidden">Hotel Manager</span>
+          <Hotel className="h-6 w-6 text-primary shrink-0" />
+          <span className="text-sm font-bold group-data-[collapsible=icon]:hidden truncate" title={hotelSettings.name}>
+            {hotelSettings.name || 'Hotel Manager'}
+          </span>
         </div>
       </SidebarHeader>
+
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>

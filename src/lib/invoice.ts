@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-import { Booking, Guest, Room, Payment } from '@/types/hotel';
+import { Booking, Guest, Room, Payment, HotelSettings } from '@/types/hotel';
 import { format, differenceInDays, parseISO } from 'date-fns';
 
 export function getPaidAmount(b: Booking): number {
@@ -24,30 +24,25 @@ export function ensureInvoiceNumber(b: Booking): string {
   return `INV-${yyyymm}-${b.id.slice(0, 6).toUpperCase()}`;
 }
 
-interface InvoiceOptions {
-  hotelName?: string;
-  hotelAddress?: string;
-  hotelPhone?: string;
-  gstNumber?: string;
-}
-
 export function downloadInvoice(
   booking: Booking,
   guest: Guest | undefined,
   room: Room | undefined,
   groupBookings: { booking: Booking; room?: Room }[] | null,
-  opts: InvoiceOptions = {}
+  settings?: HotelSettings
 ) {
   const doc = new jsPDF();
-  const hotelName = opts.hotelName || 'Hotel Manager';
+  const hotelName = settings?.name || 'Royal Heritage Hotel';
   const W = doc.internal.pageSize.getWidth();
   let y = 18;
 
-  doc.setFontSize(20).setFont('helvetica', 'bold').text(hotelName, 14, y);
-  doc.setFontSize(10).setFont('helvetica', 'normal');
-  if (opts.hotelAddress) doc.text(opts.hotelAddress, 14, (y += 6));
-  if (opts.hotelPhone) doc.text(`Phone: ${opts.hotelPhone}`, 14, (y += 5));
-  if (opts.gstNumber) doc.text(`GSTIN: ${opts.gstNumber}`, 14, (y += 5));
+  doc.setFontSize(18).setFont('helvetica', 'bold').text(hotelName, 14, y);
+  doc.setFontSize(9).setFont('helvetica', 'normal');
+  if (settings?.tagline) doc.text(settings.tagline, 14, (y += 5));
+  if (settings?.address) doc.text(settings.address, 14, (y += 4));
+  if (settings?.phone) doc.text(`Phone: ${settings.phone}${settings.email ? ` | Email: ${settings.email}` : ''}`, 14, (y += 4));
+  if (settings?.gstNumber) doc.text(`GSTIN: ${settings.gstNumber}`, 14, (y += 4));
+
 
   doc.setFontSize(16).setFont('helvetica', 'bold').text('INVOICE', W - 14, 18, { align: 'right' });
   doc.setFontSize(10).setFont('helvetica', 'normal');

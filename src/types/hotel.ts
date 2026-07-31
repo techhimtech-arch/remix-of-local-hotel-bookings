@@ -89,3 +89,17 @@ export interface Expense {
   paymentMethod: PaymentMethod;
   createdAt: string;
 }
+
+export interface HotelSettings {
+  name: string;
+  tagline: string;
+  address: string;
+  phone: string;
+  email: string;
+  gstNumber: string;
+  taxRate: number; // e.g. 12 for 12%
+  checkInTime: string;
+  checkOutTime: string;
+  terms: string;
+}
+

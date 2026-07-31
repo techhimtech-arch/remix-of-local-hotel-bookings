@@ -3,11 +3,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Download, Upload, AlertTriangle, ShieldCheck, Loader2 } from 'lucide-react';
+import { Download, Upload, AlertTriangle, ShieldCheck, Loader2, FileSpreadsheet, Users, CalendarCheck, Receipt } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { encryptBackup, decryptAndRestore } from '@/lib/backup';
+import { useHotelData } from '@/hooks/useHotelData';
+import { exportBookingsToCSV, exportGuestsToCSV, exportExpensesToCSV } from '@/lib/export';
 
 const Backup = () => {
+  const { bookings, guests, expenses, getGuestById, getRoomById } = useHotelData();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [exportPwd, setExportPwd] = useState('');
   const [exportPwd2, setExportPwd2] = useState('');
@@ -71,18 +74,77 @@ const Backup = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Backup & Restore</h1>
+        <h1 className="text-3xl font-bold">Backup, Exports & Restore</h1>
         <p className="text-muted-foreground flex items-center gap-1.5 mt-1 text-sm">
           <ShieldCheck className="h-4 w-4 text-primary" />
-          Backups are encrypted on your device with AES-256. Only your password can unlock them.
+          Backups are encrypted on your device with AES-256. Excel/CSV exports can be opened in Microsoft Excel or Google Sheets.
         </p>
       </div>
+
+      {/* Excel & CSV Exports Card */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileSpreadsheet className="h-5 w-5 text-primary" />
+            Excel / CSV Data Exports
+          </CardTitle>
+          <CardDescription>Export readable spreadsheets for accounting, tax filing, or custom record keeping.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <Button
+              variant="outline"
+              onClick={() => {
+                exportBookingsToCSV(bookings, getGuestById, getRoomById);
+                toast({ title: 'Bookings CSV Downloaded', description: `${bookings.length} booking records exported.` });
+              }}
+              className="gap-2 justify-start h-auto py-3 bg-card"
+            >
+              <CalendarCheck className="h-4 w-4 text-primary shrink-0" />
+              <div className="text-left">
+                <div className="font-semibold text-xs">Export Bookings</div>
+                <div className="text-[11px] text-muted-foreground">{bookings.length} records</div>
+              </div>
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => {
+                exportGuestsToCSV(guests, bookings);
+                toast({ title: 'Guests CSV Downloaded', description: `${guests.length} guest profiles exported.` });
+              }}
+              className="gap-2 justify-start h-auto py-3 bg-card"
+            >
+              <Users className="h-4 w-4 text-emerald-600 shrink-0" />
+              <div className="text-left">
+                <div className="font-semibold text-xs">Export Guests DB</div>
+                <div className="text-[11px] text-muted-foreground">{guests.length} profiles</div>
+              </div>
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => {
+                exportExpensesToCSV(expenses);
+                toast({ title: 'Expenses CSV Downloaded', description: `${expenses.length} expense entries exported.` });
+              }}
+              className="gap-2 justify-start h-auto py-3 bg-card"
+            >
+              <Receipt className="h-4 w-4 text-amber-600 shrink-0" />
+              <div className="text-left">
+                <div className="font-semibold text-xs">Export Expenses</div>
+                <div className="text-[11px] text-muted-foreground">{expenses.length} entries</div>
+              </div>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2"><Download className="h-5 w-5" /> Export (Encrypted)</CardTitle>
-            <CardDescription>Download all hotel data as a password-protected .hbm file.</CardDescription>
+            <CardTitle className="flex items-center gap-2"><Download className="h-5 w-5" /> Export Encrypted Backup (.hbm)</CardTitle>
+            <CardDescription>Download all hotel data as a password-protected encrypted file.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="space-y-1.5">
@@ -105,7 +167,7 @@ const Backup = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2"><Upload className="h-5 w-5" /> Restore</CardTitle>
+            <CardTitle className="flex items-center gap-2"><Upload className="h-5 w-5" /> Restore Backup</CardTitle>
             <CardDescription>Import from a previously exported .hbm backup file.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -136,3 +198,4 @@ const Backup = () => {
 };
 
 export default Backup;
+

@@ -1,12 +1,27 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { useHotelData } from '@/hooks/useHotelData';
-import { BedDouble, BedSingle, DollarSign, TrendingUp, LogIn, LogOut, TrendingDown, PiggyBank } from 'lucide-react';
+import { BedDouble, BedSingle, DollarSign, TrendingUp, LogIn, LogOut, TrendingDown, PiggyBank, Receipt } from 'lucide-react';
 import { format, isToday, parseISO, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
+import { ReceiptModal } from '@/components/ReceiptModal';
+import { ensureInvoiceNumber } from '@/lib/invoice';
+import { Booking } from '@/types/hotel';
+
 
 const Dashboard = () => {
-  const { rooms, bookings, expenses, getGuestById, getRoomById, getAvailableBeds } = useHotelData();
+  const { rooms, bookings, expenses, getGuestById, getRoomById, getAvailableBeds, hotelSettings, updateBooking } = useHotelData();
+
+  const [receiptOpen, setReceiptOpen] = useState(false);
+  const [selectedReceiptBooking, setSelectedReceiptBooking] = useState<Booking | null>(null);
+
+  const openReceipt = (booking: Booking) => {
+    const withInv = booking.invoiceNumber ? booking : { ...booking, invoiceNumber: ensureInvoiceNumber(booking) };
+    if (!booking.invoiceNumber) updateBooking(withInv);
+    setSelectedReceiptBooking(withInv);
+    setReceiptOpen(true);
+  };
 
   const stats = useMemo(() => {
     const totalRooms = rooms.length;
@@ -53,7 +68,12 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Dashboard</h1>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">{hotelSettings.name}</p>
+        </div>
+      </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -179,7 +199,12 @@ const Dashboard = () => {
                         <p className="font-medium">{guest?.name || 'Unknown'}</p>
                         <p className="text-sm text-muted-foreground">Room {room?.roomNumber}</p>
                       </div>
-                      <Badge>Confirmed</Badge>
+                      <div className="flex items-center gap-2">
+                        <Button size="sm" variant="outline" className="gap-1 text-xs" onClick={() => openReceipt(b)}>
+                          <Receipt className="h-3.5 w-3.5 text-primary" /> Parchi
+                        </Button>
+                        <Badge>Confirmed</Badge>
+                      </div>
                     </div>
                   );
                 })}
@@ -206,7 +231,12 @@ const Dashboard = () => {
                         <p className="font-medium">{guest?.name || 'Unknown'}</p>
                         <p className="text-sm text-muted-foreground">Room {room?.roomNumber}</p>
                       </div>
-                      <Badge variant="secondary">Checked-in</Badge>
+                      <div className="flex items-center gap-2">
+                        <Button size="sm" variant="outline" className="gap-1 text-xs" onClick={() => openReceipt(b)}>
+                          <Receipt className="h-3.5 w-3.5 text-primary" /> Parchi
+                        </Button>
+                        <Badge variant="secondary">Checked-in</Badge>
+                      </div>
                     </div>
                   );
                 })}
@@ -215,8 +245,28 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Receipt Modal */}
+      {selectedReceiptBooking && (
+        <ReceiptModal
+          open={receiptOpen}
+          onOpenChange={setReceiptOpen}
+          booking={selectedReceiptBooking}
+          guest={getGuestById(selectedReceiptBooking.guestId)}
+          room={getRoomById(selectedReceiptBooking.roomId)}
+          groupBookings={
+            selectedReceiptBooking.groupId
+              ? bookings
+                  .filter((x) => x.groupId === selectedReceiptBooking.groupId)
+                  .map((x) => ({ booking: x, room: getRoomById(x.roomId) }))
+              : null
+          }
+          settings={hotelSettings}
+        />
+      )}
     </div>
   );
 };
 
 export default Dashboard;
+

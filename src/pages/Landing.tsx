@@ -3,23 +3,28 @@ import { Button } from '@/components/ui/button';
 import { 
   Hotel, BedDouble, CalendarCheck, Users, BarChart3, 
   Shield, TrendingUp, PieChart, Sparkles, MessageSquare, 
-  ArrowRight, CheckCircle2 
+  ArrowRight, CheckCircle2, Receipt, Printer, Share2,
+  FileSpreadsheet, WifiOff, Building2
 } from 'lucide-react';
 
 const coreFeatures = [
-  { icon: BedDouble, title: 'Room Management', desc: 'Track all rooms, types, pricing & real-time availability in one intuitive dashboard.' },
-  { icon: CalendarCheck, title: 'Smart Booking System', desc: 'Create and track bookings seamlessly. Manage Adults/Children counts effortlessly.' },
-  { icon: Shield, title: 'Secure & Reliable', desc: 'Your data is safe with one-click export and restore capabilities.' },
+  { icon: Receipt, title: 'Thermal Parchi & Tax Bills', desc: 'Generate 80mm POS counter receipts & A4 tax invoices with live print & WhatsApp share.' },
+  { icon: Building2, title: 'Custom Hotel Branding', desc: 'Configure hotel name, address, GSTIN, and bill rules dynamically on all receipts.' },
+  { icon: FileSpreadsheet, title: 'Excel / CSV Exports', desc: '1-click download of bookings, guest directory, and expense spreadsheets.' },
 ];
 
 const advancedFeatures = [
-  { icon: TrendingUp, title: 'Expense & Profit Tracking', desc: 'Monitor daily expenses across categories (Salary, Electricity, etc.) and view monthly P/L.' },
-  { icon: PieChart, title: 'Booking Source Analytics', desc: 'Track where guests come from (Walk-in, OYO, Booking.com) with visual pie charts.' },
-  { icon: Sparkles, title: 'Housekeeping Cycle', desc: 'Manage room status (Clean, Dirty, Inspected) with a single click to maintain top-notch hygiene.' },
-  { icon: MessageSquare, title: 'Special Requests & Notes', desc: 'Keep track of guest preferences and room-specific notes to deliver a personalized experience.' },
-  { icon: Users, title: 'Detailed Guest Insights', desc: 'Maintain extensive guest records, track repeat visitors, and enhance your hospitality.' },
-  { icon: BarChart3, title: 'Comprehensive Reports', desc: 'Export detailed reports for revenue, occupancy, and business growth tracking.' }
+  { icon: Receipt, title: 'Thermal Parchi & Tax Bills', desc: 'Preview 80mm POS slips or A4 bills, calculate GST, print instantly, or share directly to guest WhatsApp.' },
+  { icon: Building2, title: 'Custom Hotel Header Settings', desc: 'Personalize Hotel Name, Tagline, Address, Phone, GSTIN, and custom terms printed on every bill.' },
+  { icon: FileSpreadsheet, title: 'Excel & CSV Data Export', desc: 'Export full bookings history, guest directory, and expense logs for accounting and Google Sheets.' },
+  { icon: WifiOff, title: '100% Offline & PWA App', desc: 'Installable app shell on mobile & desktop counter PCs. Never lose access even when internet is down.' },
+  { icon: TrendingUp, title: 'Expense & Profit Tracking', desc: 'Monitor daily expenses across categories (Salary, Electricity, Maintenance) and view real-time P/L.' },
+  { icon: PieChart, title: 'Booking Source Analytics', desc: 'Track guest channels (Walk-in, OYO, Booking.com, MakeMyTrip) with visual breakdown.' },
+  { icon: Sparkles, title: 'Housekeeping Cycle', desc: 'Manage room status (Clean, Dirty, Inspected) with single-click updates for your staff.' },
+  { icon: Users, title: 'Detailed Guest Insights', desc: 'Maintain detailed guest records, ID proofs, repeat guest tracking, and stay history.' },
+  { icon: BarChart3, title: 'Comprehensive Reports', desc: 'Export detailed financial and occupancy analytics for property growth.' }
 ];
+
 
 const Landing = () => {
   return (
@@ -60,19 +65,20 @@ const Landing = () => {
         <div className="max-w-7xl mx-auto px-6 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8 border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer">
             <Sparkles className="h-4 w-4" />
-            <span>Now with Expense & Housekeeping Tracking</span>
+            <span>New: Thermal Parchi, WhatsApp Sharing & Excel Exports</span>
           </div>
           
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight mb-8">
             Manage Your Hotel <br className="hidden md:block" />
             <span className="bg-gradient-to-r from-primary via-blue-500 to-indigo-500 bg-clip-text text-transparent drop-shadow-sm">
-              Like a Pro
+              Offline & Effortlessly
             </span>
           </h1>
           
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-            The all-in-one platform built for modern hoteliers. Track bookings, manage expenses, monitor housekeeping, and analyze your profits — effortlessly.
+            The offline-ready hotel management app. Print thermal counter receipts (parchi), export Excel spreadsheets, share bills on WhatsApp, and manage rooms & expenses — 100% offline.
           </p>
+
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button size="lg" className="w-full sm:w-auto h-14 px-8 text-lg rounded-full shadow-xl shadow-primary/25 hover:shadow-primary/40 transition-all hover:-translate-y-1" asChild>

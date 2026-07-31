@@ -11,11 +11,14 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useHotelData } from '@/hooks/useHotelData';
 import { Booking, BookingStatus, Guest } from '@/types/hotel';
-import { Plus, Search, LogIn, LogOut, UserCheck, List, CalendarDays, Trash2, FileText, Users } from 'lucide-react';
+import { Plus, Search, LogIn, LogOut, UserCheck, List, CalendarDays, Trash2, Users, Receipt, Building2 } from 'lucide-react';
 import { format, differenceInDays, parseISO } from 'date-fns';
 import { CheckInQRButton } from '@/components/CheckInQRButton';
 import { PaymentDialog } from '@/components/PaymentDialog';
-import { downloadInvoice, getPaidAmount, getPaymentStatus, ensureInvoiceNumber } from '@/lib/invoice';
+import { ensureInvoiceNumber } from '@/lib/invoice';
+import { ReceiptModal } from '@/components/ReceiptModal';
+import { HotelSettingsModal } from '@/components/HotelSettingsModal';
+
 
 const statusVariant: Record<BookingStatus, 'default' | 'secondary' | 'destructive' | 'outline'> = {
   Confirmed: 'default',
@@ -25,11 +28,16 @@ const statusVariant: Record<BookingStatus, 'default' | 'secondary' | 'destructiv
 };
 
 const Bookings = () => {
-  const { rooms, guests, bookings, addBooking, updateBooking, addGuest, getGuestById, getRoomById, updateRoom, getAvailableBeds } = useHotelData();
+  const { rooms, guests, bookings, addBooking, updateBooking, addGuest, getGuestById, getRoomById, updateRoom, getAvailableBeds, hotelSettings, updateHotelSettings } = useHotelData();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
+
+  // Receipt & Hotel Settings modal states
+  const [receiptOpen, setReceiptOpen] = useState(false);
+  const [selectedReceiptBooking, setSelectedReceiptBooking] = useState<Booking | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   // Guest fields
   const [selectedGuestId, setSelectedGuestId] = useState<string | null>(null);
@@ -60,6 +68,13 @@ const Bookings = () => {
     if (r.type === 'Dormitory') return getAvailableBeds(r.id).length > 0;
     return r.status === 'Available';
   });
+
+  const openReceipt = (booking: Booking) => {
+    const withInv = booking.invoiceNumber ? booking : { ...booking, invoiceNumber: ensureInvoiceNumber(booking) };
+    if (!booking.invoiceNumber) updateBooking(withInv);
+    setSelectedReceiptBooking(withInv);
+    setReceiptOpen(true);
+  };
 
   const guestSuggestions = useMemo(() => {
     if (!guestSearchQuery || guestSearchQuery.length < 2) return [];
@@ -128,6 +143,8 @@ const Bookings = () => {
     }
 
     const groupId = validLines.length > 1 ? crypto.randomUUID() : undefined;
+    let firstBooking: Booking | null = null;
+
     validLines.forEach((l) => {
       const room = getRoomById(l.roomId)!;
       const booking: Booking = {
@@ -146,10 +163,18 @@ const Bookings = () => {
         ...(room.type === 'Dormitory' ? { bedNumber: Number(l.bedNumber) } : {}),
         ...(groupId ? { groupId } : {}),
       };
+      booking.invoiceNumber = ensureInvoiceNumber(booking);
+      if (!firstBooking) firstBooking = booking;
       addBooking(booking);
     });
+
     setOpen(false);
     resetForm();
+
+    // Auto open Parchi/Bill for the newly created booking!
+    if (firstBooking) {
+      openReceipt(firstBooking);
+    }
   };
 
   const handleCheckIn = (booking: Booking) => {
@@ -186,15 +211,23 @@ const Bookings = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Bookings</h1>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Bookings</h1>
+          <p className="text-sm text-muted-foreground">{hotelSettings.name}</p>
+        </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => setSettingsOpen(true)} className="gap-1.5">
+            <Building2 className="h-4 w-4 text-primary" />
+            Hotel & Bill Settings
+          </Button>
           <ToggleGroup type="single" value={viewMode} onValueChange={(v) => v && setViewMode(v as 'list' | 'calendar')}>
             <ToggleGroupItem value="list" aria-label="List view"><List className="h-4 w-4" /></ToggleGroupItem>
             <ToggleGroupItem value="calendar" aria-label="Calendar view"><CalendarDays className="h-4 w-4" /></ToggleGroupItem>
           </ToggleGroup>
           <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) resetForm(); }}>
             <DialogTrigger asChild>
+
               <Button><Plus className="h-4 w-4 mr-1" /> New Booking</Button>
             </DialogTrigger>
           <DialogContent className="max-w-lg">
@@ -436,15 +469,13 @@ const Bookings = () => {
                             <CheckInQRButton bookingId={b.id} guestName={guest?.name} />
                             <Button
                               size="sm"
-                              variant="ghost"
-                              title="Download Invoice"
-                              onClick={() => {
-                                const withInv = b.invoiceNumber ? b : { ...b, invoiceNumber: ensureInvoiceNumber(b) };
-                                if (!b.invoiceNumber) updateBooking(withInv);
-                                downloadInvoice(withInv, guest, room, groupItems);
-                              }}
+                              variant="outline"
+                              className="gap-1 text-xs"
+                              title="View / Print Parchi & Bill"
+                              onClick={() => openReceipt(b)}
                             >
-                              <FileText className="h-3 w-3" />
+                              <Receipt className="h-3.5 w-3.5 text-primary" />
+                              Parchi / Bill
                             </Button>
                             {b.status === 'Confirmed' && (
                               <>
@@ -466,8 +497,36 @@ const Bookings = () => {
           )}
         </>
       )}
+
+      {/* Receipt / Parchi Modal */}
+      {selectedReceiptBooking && (
+        <ReceiptModal
+          open={receiptOpen}
+          onOpenChange={setReceiptOpen}
+          booking={selectedReceiptBooking}
+          guest={getGuestById(selectedReceiptBooking.guestId)}
+          room={getRoomById(selectedReceiptBooking.roomId)}
+          groupBookings={
+            selectedReceiptBooking.groupId
+              ? bookings
+                  .filter((x) => x.groupId === selectedReceiptBooking.groupId)
+                  .map((x) => ({ booking: x, room: getRoomById(x.roomId) }))
+              : null
+          }
+          settings={hotelSettings}
+        />
+      )}
+
+      {/* Hotel Settings Modal */}
+      <HotelSettingsModal
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        settings={hotelSettings}
+        onSave={updateHotelSettings}
+      />
     </div>
   );
 };
 
 export default Bookings;
+
